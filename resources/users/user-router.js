@@ -11,4 +11,7 @@ userRouter.route('/:id')
 userRouter.route('/:id/rides')
     .get(userController.getAllRidesById);
 
+userRouter.route('/promo_code/:promo_code')
+    .get(userController.getOneByPromoCode);
+
 module.exports = userRouter;

@@ -17,6 +17,17 @@ const getOneById = (req, res, next) => {
         })
 };
 
+const getOneByPromoCode = (req, res, next) => {
+    const { promo_code } = req.params;
+    User.findOne({ where: { promo_code }, include: [{ model: Ride, include: StartCity }] })
+        .then((user) => {
+            if (!user) {
+                return res.sendStatus(404);
+            }
+            res.json(user);
+        });
+};
+
 const getAllRidesById = (req, res, next) => {
     const { id } = req.params;
 
@@ -29,5 +40,6 @@ const getAllRidesById = (req, res, next) => {
 module.exports = {
     getAll,
     getOneById,
+    getOneByPromoCode,
     getAllRidesById
 };
