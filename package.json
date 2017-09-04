@@ -13,6 +13,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "connect-redis": "^3.3.0",
+    "cors": "^2.8.4",
     "express": "^4.15.4",
     "express-session": "^1.15.5",
     "morgan": "^1.8.2",
