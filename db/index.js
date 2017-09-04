@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const db = new Sequelize('ridestats', '', '', {
+const db = new Sequelize(process.env.DB, {
   host: 'localhost',
   dialect: 'postgres',
   pool: {
