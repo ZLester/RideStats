@@ -1,7 +1,7 @@
 const uberClient = require('../uber/uber-client');
 const User = require('../users/user');
 
-const login = (req, res, next) => {
+const authorize = (req, res, next) => {
     const { code } = req.query;
     req.session.code = code;
 
@@ -21,6 +21,10 @@ const login = (req, res, next) => {
         });
 };
 
+const login = (req, res, next) => {
+    res.redirect(uberClient.uber_login_endpoint);
+};
+
 const logout = (req, res, next) => {
     req.session.destroy();
 
@@ -28,6 +32,7 @@ const logout = (req, res, next) => {
 };
 
 module.exports = {
+    authorize,
     login,
     logout
 };
