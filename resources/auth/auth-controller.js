@@ -1,23 +1,32 @@
 const uberClient = require('../uber/uber-client');
 const User = require('../users/user');
+const Ride = require('../uber/ride');
+const StartCity = require('../uber/start-city');
 
 const authorize = (req, res, next) => {
     const { code } = req.query;
+    if (!code) {
+        return next(new Error('Authorization code required.'));
+    }
     req.session.code = code;
 
     uberClient.getAccessToken(code)
-        .then(({ access_token }) => {
-            req.session.access_token = access_token;
+        .then((result) => {
+            if (result.error) {
+                return next(new Error('Invalid authorization code.'));
+            }
 
+            req.session.access_token = result.access_token;
             return uberClient.getMe(req.session.access_token)
         })
         .then((user) => {
-            return User.findOrCreate({ where: { rider_id: user.rider_id }, defaults: user });
+            return User.findOrCreate({ where: { rider_id: user.rider_id }, defaults: user, include: [{ model: Ride, include: StartCity }] });
         })
         .then((result) => {
             const [user, created] = result;
             req.session.user = user;
-            res.redirect('/');
+            
+            res.json(user);
         });
 };
 

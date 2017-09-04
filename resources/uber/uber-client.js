@@ -1,5 +1,7 @@
 const request = require('request');
 
+const { generateHistoryOffsets } = require('./uber-utils');
+
 class UberClient {
     constructor () {
         this.client_id = process.env.CLIENT_ID;
@@ -28,11 +30,11 @@ class UberClient {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             form: { 
+                code,
                 client_id: this.client_id,
                 client_secret: this.client_secret,
                 redirect_uri: this.redirect_uri,
-                grant_type: 'authorization_code',
-                code: code
+                grant_type: 'authorization_code'
             },
         }
 
@@ -89,14 +91,7 @@ class UberClient {
     }
 
     getRemainingHistories (count, accessToken) {
-        return this.generateOffsets(count).map((offset) => this.getHistory(offset, accessToken));
-    }
-
-    generateOffsets (count) {
-        const remaining = count - 50;
-        const queries = Math.ceil(remaining / 50);
-
-        return [...new Array(queries).keys()].map((i) => (i + 1) * 50);
+        return generateHistoryOffsets(count).map((offset) => this.getHistory(offset, accessToken));
     }
 }
 

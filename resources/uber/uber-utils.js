@@ -1,15 +1,21 @@
+const generateHistoryOffsets = (count) => {
+  const remaining = count - 50;
+  const queries = Math.ceil(remaining / 50);
 
-export const getTripDay = (startTime) => {
+  return [...new Array(queries).keys()].map((i) => (i + 1) * 50);
+};
+
+const getTripDay = (startTime) => {
   const date = new Date(startTime * 1000);
   return date.getDay();
 };
 
-export const getTripHour = (startTime) => {
+const getTripHour = (startTime) => {
   const date = new Date(startTime * 1000);
   return date.getHours();
 };
 
-export const updateTripsPerCity = (tripsPerCity, currentTrip) => {
+const updateTripsPerCity = (tripsPerCity, currentTrip) => {
   const nextTripsPerCity = Object.assign({}, tripsPerCity);
   const currentTripCity = currentTrip.start_city.display_name;
   if (!nextTripsPerCity[currentTripCity]) {
@@ -20,7 +26,7 @@ export const updateTripsPerCity = (tripsPerCity, currentTrip) => {
   return nextTripsPerCity;
 };
 
-export const updateTripsPerDay = (tripsPerDay, currentTrip) => {
+const updateTripsPerDay = (tripsPerDay, currentTrip) => {
   const currentTripDay = getTripDay(currentTrip.start_time);
   return tripsPerDay.map((tally, day) => {
     if (currentTripDay === day) {
@@ -30,7 +36,7 @@ export const updateTripsPerDay = (tripsPerDay, currentTrip) => {
   });
 };
 
-export const updateTripsPerHour = (tripsPerHour, currentTrip) => {
+const updateTripsPerHour = (tripsPerHour, currentTrip) => {
   const currentTripHour = getTripHour(currentTrip.start_time);
   return tripsPerHour.map((tally, hour) => {
     if (currentTripHour === hour) {
@@ -40,26 +46,26 @@ export const updateTripsPerHour = (tripsPerHour, currentTrip) => {
   });
 };
 
-export const updateTimeSpentWaiting = (timeSpentWaiting, currentTrip) => (
+const updateTimeSpentWaiting = (timeSpentWaiting, currentTrip) => (
   timeSpentWaiting + currentTrip.start_time - currentTrip.request_time
 );
 
-export const updateTimeSpentRiding = (timeSpentRiding, currentTrip) => (
+const updateTimeSpentRiding = (timeSpentRiding, currentTrip) => (
   timeSpentRiding + currentTrip.end_time - currentTrip.start_time
 );
 
-export const updateTotalDistanceTraveled = (totalDistanceTraveled, currentTrip) => (
+const updateTotalDistanceTraveled = (totalDistanceTraveled, currentTrip) => (
   totalDistanceTraveled + currentTrip.distance
 );
 
-export const updateLongestRide = (longestRide, currentTrip) => {
+const updateLongestRide = (longestRide, currentTrip) => {
   if (longestRide.distance < currentTrip.distance) {
     return currentTrip;
   }
   return longestRide;
 };
 
-export const generateStatistics = (histories) => {
+const generateStatistics = (histories) => {
   const statistics = {
     numberOfTrips: histories.length,
     tripsPerCity: {},
@@ -84,4 +90,8 @@ export const generateStatistics = (histories) => {
 
     return stats;
   }, statistics);
+};
+
+module.exports = {
+  generateHistoryOffsets
 };

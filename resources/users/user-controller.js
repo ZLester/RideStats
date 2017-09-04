@@ -11,7 +11,7 @@ const getAll = (req, res, next) => {
 
 const getOneById = (req, res, next) => {
     const { id } = req.params;
-    User.findById(id, { include: [{ model: Ride }]})
+    User.findById(id, { include: [{ model: Ride, include: StartCity }] })
         .then((user) => {
             res.json(user);
         })

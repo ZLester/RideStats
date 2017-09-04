@@ -1,8 +1,7 @@
-const User = require('../users/user');
 const Ride = require('./ride');
 const StartCity = require('./start-city');
-
 const uberClient = require('./uber-client');
+const User = require('../users/user');
 
 const getMe = (req, res, next) => {
     res.json(req.session.user);
