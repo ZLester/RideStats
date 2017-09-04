@@ -11,15 +11,18 @@ const getMe = (req, res, next) => {
 const createRides = (req, res, next) => {
     uberClient.getAllRides(req.session.access_token)
         .then((rides) => {
-            return Promise.all([User.findById(req.session.user.id), ...rides.map((ride) => Ride.create(ride))]);
+            return Promise.all([
+                ...rides.map((ride) => Ride.create(ride, { include: [{ association: Ride.StartCity }] })),
+                User.findById(req.session.user.id)
+            ]);
         })
         .then((results) => {
-            const [user, ...rides] = results;
+            const user = results.pop();
 
-            return user.setRides(rides);
+            return user.setRides(results);
         })
         .then((user) => {
-            return Ride.findAll({ where: { user_id: user.id }, order: [['id', 'ASC']] });
+            return Ride.findAll({ where: { user_id: user.id }, include: [{ model: StartCity }], order: [['id', 'ASC']] });
         })
         .then((rides) => {
             res.status(201).json(rides);
